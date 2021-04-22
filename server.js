@@ -7,6 +7,7 @@ const path = require("path");
 const usersRoutes = require('./routes/users');
 const tasksRoutes = require('./routes/tasks');
 const hivesRoutes = require('./routes/hives');
+const inspectionRoutes = require('./routes/inspection');
 const apiarysRoutes = require('./routes/apiarys');
 const quensRoutes = require('./routes/quens');
 const logoutRoutes = require('./routes/logout');
@@ -32,6 +33,7 @@ server.use(session({
 server.use('/user', usersRoutes);
 server.use('/tasks', tasksRoutes);
 server.use('/hives', hivesRoutes);
+server.use('/inspection', inspectionRoutes);
 server.use('/apiarys', apiarysRoutes);
 server.use('/quens', quensRoutes);
 server.use('/logout', logoutRoutes);
