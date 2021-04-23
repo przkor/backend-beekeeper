@@ -28,7 +28,7 @@ exports.addTask = (req,res,next) => {
         const subject = req.body.subject;
         if (id === "" || id === undefined) {
            tasks.addTask(username, title, subject, function (result) {
-             res.send(result);
+             res.status(201).send(result);
             });
         } else {
               tasks.updateTask(username, id, title, subject, function (result) {
@@ -52,7 +52,7 @@ exports.updateTask = (req,res,next) => {
         if (!checkIsLogged(username)) {res.send('access denied') ;return}
         const id = req.body.id;
         tasks.getTaskWithId(username, id, function (result) {
-          res.send(result);
+          res.status(202).send(result);
         });
 
     } catch(error) {

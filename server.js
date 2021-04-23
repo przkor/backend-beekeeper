@@ -22,7 +22,7 @@ server.use(session({
     saveUninitialized: false ,
     resave:true,
     cookie : {
-      maxAge: 600000,
+      maxAge: 6000000,
       sameSite: 'strict', 
     }
   }));

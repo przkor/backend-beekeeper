@@ -1,88 +1,83 @@
-U�ytkownicy:
+User:
 1.
-  Login: wiesiek
-  Has�o: w
+  Login: test
+  Password: test123
 
 -----------------------------------------------
 
 Base url: http://localhost:7777
+Database is working remote on Mongo Cluster. Database configuration is in file /database/mongoConfig.js
 
-Endpoint: '/users'
+Endpoint: '/user'
 
-1. Metoda POST (logowanie u�ytkownika):
+1. Metoda POST (rejestracja użytkownika):
   body: {
+    login: string,
+    name: string,
+    email: string,
+    password: string
+  }
+
+  responses:
+
+    - status: 200, data: string ('success' or 'failure')
+
+
+2. Metoda GET (logowanie użytkownika):
+  params: {
     login: string,
     password: string,
   }
 
   responses:
-    - status: 404, message: 'U�ytkownik o podanym loginie nie istnieje'
-    - status: 401, message: 'Has�o lub login si� nie zgadza',
-    - status: 200, data: user(object)
-    - status: 500, message: 'Oops! Co� posz�o nie tak, przy metodzie POST w endpointcie /users'
+    - status: 200, string ('success' or 'failure')
 
-2. Metoda PATCH (zakup kursu):
+Endpoint: '/tasks'
+
+1. Metoda GET (pobranie wszystkich zadań)
+
+  responses:
+    - status: 200, object[]
+    - status: 500, message: 'Błąd! Coś poszło nie tak, przy metodzie GET w endpointcie /tasks'
+
+2. Metoda PUT (przesłanie zaktualizowanego zadania)
   body: {
-    login: string,
-    courseId: string,
+    id:string
   }
 
   responses:
-    - status: 404, message: 'Nie znaleziono kursu o podanym Id'
-    - status: 404, message: 'Nie znaleziono uzytkownika o podanym loginie',
-    - status: 200, data: user(object)
-    - status: 403, message: 'Uzytkownik nie posiada wystarczaj�cych funduszy',
-    - status: 202, data: user(object)
-    - status: 500, message: 'Oops! Co� posz�o nie tak, przy metodzie PATCH w endpointcie /users'
+    - status: 202, object[]
+    - status: 500, message: 'Błąd! Coś poszło nie tak, przy metodzie PUT w endpointcie /tasks'
 
-Endpoint: '/courses'
-
-1. Metoda GET (pobranie wszystkich kurs�w)
-
-  responses:
-    - status: 200, data: courses(object[])
-    - status: 500, message: 'Oops! Co� posz�o nie tak, przy metodzie GET w endpointcie /courses'
-
-2. Metoda PUT (przes�anie zaktualizowanego kursu)
+3. Metoda POST (utworzenie nowego zadania)
   body: {
-    authors: string[],
     id: string,
-    img: string,
-    price: number,
     title: string,
+    subject: string,
   }
 
   responses:
-    - status: 400, message: 'Nie podano wszystkich wymaganych informacji'
-    - status: 404, message: 'Nie znaleziono kursu o podanym id'
-    - status: 202, data: courses(object[])
-    - status: 500, message: 'Oops! Co� posz�o nie tak, przy metodzie PUT w endpointcie /courses'
+    - status: 201, object[]
+    - status: 500, message: 'Błąd! Coś poszło nie tak, przy metodzie POST w endpointcie /tasks'
 
-3. Metoda POST (tworzenie nowego kursu)
-  body: {
-    authors: string[],
-    img: string,
-    price: number,
-    title: string,
-  }
+4. Metoda DELETE (usuwanie zadania)
+  params: '/tasks/:id'
 
   responses:
-    - status: 400, message: 'Nie podano wszystkich wymaganych informacji'
-    - status: 409, message: 'Istnieje ju� w bazie kurs ${title}'
-    - status: 201, data: courses(object[])
-    - status: 500, message: 'Oops! Co� posz�o nie tak, przy metodzie POST w endpointcie /courses'
+    - status: 200, object[]
+    - status: 500, message: 'Błąd! Coś poszło nie tak, przy metodzie DELETE w endpointcie /tasks'
 
-4. Metoda DELETE (usuwanie kursu)
-  params: '/courses/:id'
+5. Metoda GET (pobranie pojedynczego zadania do edycji)
+  params: '/tasks/:id'
 
   responses:
-    - status: 404, message: 'Nie znaleziono kursu o podanym id'
-    - status: 200
-    - status: 500, message: 'Oops! Co� posz�o nie tak, przy metodzie DELETE w endpointcie /courses/:id'
+    - status: 200, object[]
+    - status: 500, message: 'Błąd! Coś poszło nie tak, przy metodzie GET w endpointcie /tasks'
 
-5. Metoda GET (pobranie pojedy�czego kursu)
-  params: '/courses/:id'
+    ...... pozostała dokumentacja w trakcie tworzenia
 
-  responses:
-    - status: 200, data: course(object)
-    - status: 500, message: 'Oops! Co� posz�o nie tak, przy metodzie GET w endpointcie /courses/:id'
+    Endpoint: '/hives'
+    Endpoint: '/inspection'
+    Endpoint: '/apiarys'
+    Endpoint: '/quens'
+    Endpoint: '/logout'
