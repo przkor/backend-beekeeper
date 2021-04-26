@@ -23,15 +23,17 @@ exports.addTask = (req,res,next) => {
     try {
         username = req.session.username;
         if (!checkIsLogged(username)) {res.send('access denied') ;return}
-        const id = req.body.id;
-        const title = req.body.title;
-        const subject = req.body.subject;
+        const id = req.body.id
+        const title = req.body.title
+        const subject = req.body.subject
+        const apiary = req.body.apiary
+        const date = req.body.date
         if (id === "" || id === undefined) {
-           tasks.addTask(username, title, subject, function (result) {
+           tasks.addTask(username, title, subject, apiary,date, function (result) {
              res.status(201).send(result);
             });
         } else {
-              tasks.updateTask(username, id, title, subject, function (result) {
+              tasks.updateTask(username, id, title, subject, apiary, date, function (result) {
                 res.send(result);
               });
         }

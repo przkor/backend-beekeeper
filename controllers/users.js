@@ -2,8 +2,8 @@ const user = require("../database/user");
 
 exports.signInUser = (req, res, next) => {
   try {
-    const login = req.query.login;
-    const password = req.query.password;
+    const login = 'wiesiek' //req.query.login;
+    const password = 'w' //req.query.password;
     user.validateSignIn(login, password, function (result) {
       if (result) {
         req.session.username = login;

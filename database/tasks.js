@@ -5,7 +5,7 @@ const dbCollection = 'tasks'
 
 module.exports = {
 
-  addTask: function (username, title, subject, callback) {
+  addTask: function (username, title, subject, apiary,date, callback) {
     const client = MongoClient(uri, mongoConstructor)
     client.connect(function (err, db) {
       const dbcon = db.db(username);
@@ -13,6 +13,8 @@ module.exports = {
         {
           title: title,
           subject: subject,
+          apiary: apiary,
+          date: date
         },
         function (err, result) {
           client.close();
@@ -26,7 +28,7 @@ module.exports = {
     });
   },
 
-  updateTask: function (username, id, title, subject, callback) {
+  updateTask: function (username, id, title, subject, apiary,date, callback) {
     const client = MongoClient(uri, mongoConstructor)
     client.connect(function (err, db) {
       const dbcon = db.db(username);
@@ -34,7 +36,7 @@ module.exports = {
         .collection(dbCollection)
         .updateOne(
           { _id: new mongodb.ObjectID(id) },
-          { $set: { title: title, subject: subject } },
+          { $set: { title: title, subject: subject, apiary:apiary , date:date } },
           function (err, result) {
             client.close();
             if (err == null) {
