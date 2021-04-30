@@ -54,7 +54,7 @@ module.exports = {
         client.connect(function (err, db) {
             const dbcon = db.db(username);
             dbcon.collection(dbCollection, function (err, collection) {
-                collection.find().toArray(function (err, list) {
+                collection.find().sort({date:1}).toArray(function (err, list) {
                     client.close();
                     callback(list);
                 });
