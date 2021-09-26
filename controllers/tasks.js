@@ -4,10 +4,11 @@ const {checkIsLogged} = require('./checkIsLogged')
 exports.getTasks = (req, res, next) => {
   try {
     username = req.session.username;
+    let status=req.query.status
     let taskID = null
     if (!checkIsLogged(username)) {res.send('access denied') ;return}
     if (req.query.taskID) { taskID = req.query.taskID }
-    tasks.getTasks(username,taskID, function (result) {
+    tasks.getTasks(username,taskID,status, function (result) {
         res.status(200).send(result);
     });
   } catch (error) {
@@ -23,12 +24,12 @@ exports.addTask = (req,res,next) => {
     try {
         username = req.session.username;
         if (!checkIsLogged(username)) {res.send('access denied') ;return}
-        const id = req.body.id
-        const title = req.body.title
-        const subject = req.body.subject
-        const apiary = req.body.apiary
-        const date = req.body.date
-        if (id === "" || id === undefined) {
+        const id = req.body.data.id
+        const title = req.body.data.title
+        const subject = req.body.data.subject
+        const apiary = req.body.data.apiary
+        const date = req.body.data.date
+        if (id === "" || id === undefined || id === null) {
            tasks.addTask(username, title, subject, apiary,date, function (result) {
              res.status(201).send(result);
             });
@@ -48,11 +49,31 @@ exports.addTask = (req,res,next) => {
     }
 }
 
+exports.finishTask = (req,res,next) => {
+  try {
+      username = req.session.username;
+      if (!checkIsLogged(username)) {res.send('access denied') ;return}
+      const id = req.body.id;
+      tasks.finishTask(username, id, function (result) {
+        console.log(result)
+        res.status(202).send(result);
+      });
+
+  } catch(error) {
+      res.status(500).json({
+          error,
+          message: 'Błąd! Coś poszło nie tak, przy metodzie Patch w endpointcie /tasks',
+        });
+        console.log(error)
+
+  }
+}
+
 exports.updateTask = (req,res,next) => {
     try {
         username = req.session.username;
         if (!checkIsLogged(username)) {res.send('access denied') ;return}
-        const id = req.body.id;
+        const id = req.body.data.id;
         tasks.getTaskWithId(username, id, function (result) {
           res.status(202).send(result);
         });

@@ -14,7 +14,9 @@ module.exports = {
           title: title,
           subject: subject,
           apiary: apiary,
-          date: date
+          date: date,
+          finishDate:'',
+          status:1
         },
         function (err, result) {
           client.close();
@@ -25,6 +27,28 @@ module.exports = {
           }
         }
       );
+    });
+  },
+
+  finishTask: function (username, id, callback) {
+    const client = MongoClient(uri, mongoConstructor)
+    const today = new Date().toISOString().slice(0,10)
+    client.connect(function (err, db) {
+      const dbcon = db.db(username);
+      dbcon
+        .collection(dbCollection)
+        .updateOne(
+          { _id: new mongodb.ObjectID(id) },
+          { $set: { status: 0, finishDate:today } },
+          function (err, result) {
+            client.close();
+            if (err == null) {
+              callback(true);
+            } else {
+              callback(false);
+            }
+          }
+        );
     });
   },
 
@@ -48,13 +72,19 @@ module.exports = {
         );
     });
   },
-  getTasks: function (username,taskID, callback) {
+  
+  getTasks: function (username,taskID,status, callback) {
     const client = MongoClient(uri, mongoConstructor)
+    let query
+    let options
+    if (parseInt(status)===1) {query = {status:1} ; options = {date:1}}
+    else {query = {status:0} ; options = {finishDate:-1}}
+  
     if (taskID ===null) {
         client.connect(function (err, db) {
             const dbcon = db.db(username);
             dbcon.collection(dbCollection, function (err, collection) {
-                collection.find().sort({date:1}).toArray(function (err, list) {
+                collection.find(query).sort(options).toArray(function (err, list) {
                     client.close();
                     callback(list);
                 });
@@ -81,6 +111,20 @@ module.exports = {
     } 
   },
 
+  getHistorycalTasks: function (username, callback) {
+    const client = MongoClient(uri, mongoConstructor)
+    query = {status:0}
+        client.connect(function (err, db) {
+            const dbcon = db.db(username);
+            dbcon.collection(dbCollection, function (err, collection) {
+                collection.find(query).sort({date:1}).toArray(function (err, list) {
+                    client.close();
+                    callback(list);
+                });
+            });
+        });
+  },
+
   deleteTask: function (username, id, callback) {
     const client = MongoClient(uri, mongoConstructor)
     client.connect(function (err, db) {
@@ -91,7 +135,7 @@ module.exports = {
         },
         function (err, result) {
           client.close();
-          if (err == null) {
+          if (err === null) {
             callback(true);
           } else {
             callback(false);
