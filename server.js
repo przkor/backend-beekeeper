@@ -15,7 +15,8 @@ const logoutRoutes = require('./routes/logout');
 const server = express();
 
 server.use(bodyParser.json());
-server.use(express.static(path.join(__dirname, "../beekeeper/public")));
+server.use(express.static(path.join(__dirname, 'build')));
+
 server.use(cors());
 server.use(session({ 
     secret: "ErbY78P16Jk" ,

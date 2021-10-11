@@ -1,4 +1,4 @@
-const {uri,mongoConstructor} = require("./mongoConfig")
+const {uri,mongoConstructor} = require("./mongoconfig")
 const MongoClient = require("mongodb").MongoClient;
 const mongodb = require("mongodb");
 const dbcollection = 'quens'

@@ -1,4 +1,4 @@
-const {uri,mongoConstructor} = require("./mongoConfig")
+const {uri,mongoConstructor} = require("./mongoconfig")
 //import {uri,mongoConstructor} from './mongoConfig' 
 let MongoClient = require("mongodb").MongoClient;
 const collectionName = "user"

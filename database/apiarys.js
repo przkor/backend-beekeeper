@@ -1,4 +1,4 @@
-const {uri,mongoConstructor} = require("./mongoConfig")
+const {uri,mongoConstructor} = require("./mongoconfig")
 let MongoClient = require("mongodb").MongoClient;
 let mongodb = require("mongodb");
 const dbCollection = 'apiary'
