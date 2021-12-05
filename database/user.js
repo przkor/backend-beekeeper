@@ -72,12 +72,13 @@ module.exports = {
         function (err, result) {
           client.close();
           if (result === null) {
-            console.log("Niezalogowano",err);
+            console.log("Niezalogowano");
             callback(false);
           } else {
             console.log("Zalogowano poprawnie");
             callback(true);
           }
+          if (err) console.log("błąd: ", err)
         }
       );    
     });

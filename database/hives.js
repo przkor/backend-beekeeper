@@ -2,7 +2,7 @@ const {uri,mongoConstructor} = require("./mongoconfig")
 const MongoClient = require("mongodb").MongoClient;
 const mongodb = require("mongodb");
 const dbcollection = 'hives'
-
+let todayData = new Date().toISOString().slice(0,10)
 module.exports = {
 
   getFreeHiveNumber: function (username, callback) {
@@ -164,6 +164,12 @@ module.exports = {
                       power:power,
                       status:status,
                       apiary:apiary,
+                      inspection:[{
+                        ins_data:todayData,
+                        ins_type1:"utworzenie",
+                        ins_type2:"nowa rodzina",
+                        decription:""
+                      }],
                       isActive:isActive
                     },
                     function (err, result) {
@@ -183,27 +189,35 @@ module.exports = {
         });
   },
  
-  deleteHive: function (username, hiveID, callback) {
+  deleteHive:  async function (username, hiveID,number, callback) {
+    try {
     const client =  MongoClient(uri,mongoConstructor)
-    client.connect(function (err, db) {
+    await client.connect(function (err, db) {
       if (err) {console.log(`Błąd połączenia z bazą danych: ${err}`); return}
       const dbcon = db.db(username);
-      dbcon.collection(dbcollection).updateOne(
-        {
-          _id: new mongodb.ObjectID(hiveID),
-
-        },
-        { $set: { isActive: false } },
-        function (err, result) {
-          if (err === null) {
-            callback(true);
-          } else {
-            callback(false);
+      
+        dbcon.collection(dbcollection).updateOne(
+          {
+            _id: new mongodb.ObjectID(hiveID),
+  
+          },
+          { $set: { isActive: false } },
+          function (err, result) {
+            if (err === null) {
+              callback(true);
+            } else {
+              callback(false);
+            }
           }
-          client.close()
-        }
-      );
-    });
+        );
+        const collection = 'U'+number
+        dbcon.collection(collection).drop();
+      })
+    }
+      catch (error) {
+        callback(false)
+        console.log('Błąd podczas próby usunięcia z bazy')
+      } 
   },
 
 

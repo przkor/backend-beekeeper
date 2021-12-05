@@ -110,7 +110,8 @@ deleteHive: function (req, res, next) {
   if (!checkIsLogged(username)) {res.send('access denied') ;return}
   try { 
     const id= req.query.id
-    hives.deleteHive(username, id, 
+    const number = req.query.number
+    hives.deleteHive(username, id,number, 
       function (result) {
       res.send(result);
     });
