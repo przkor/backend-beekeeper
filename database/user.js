@@ -1,19 +1,62 @@
 const {uri,mongoConstructor} = require("./mongoconfig")
 //import {uri,mongoConstructor} from './mongoConfig' 
-let MongoClient = require("mongodb").MongoClient;
+const MongoClient = require("mongodb").MongoClient;
 const collectionName = "user"
 
 
 module.exports = {
-  signup: function (login, name, email, password, callback) {
-    //const textToSplit = email.split("@");
-    //const dbName = textToSplit[0];
+  signup: async function (login, name, email, password, callback) { 
+    const client = new MongoClient(uri, mongoConstructor );
+    try {
+      await client.connect()
+      let database = client.db('users');
+      let collection = database.collection('users');
+      let query = { login: login };
+      let result = await collection.findOne(query);
+      console.log(result)
+      if (result!==null) { 
+        callback(false)
+      }
+      else {   
+        result = await collection.insertOne({
+          login:login,
+          name:name,
+          email:email,
+          password:password,
+          active:0
+        })
+        if (result.insertedCount===1) { 
+          callback(true)
+        }
+        else {callback(false)}
+      }
+        /*
+        database = await client.db(login);
+        collection = await database.collection('user');
+        query = { login: login , name:name, email:email, password:password };
+        result = await collection.insertOne(query);
+        if (result.insertedCount===1) { 
+          callback(true)
+        }
+        else {callback(false)}
+      }
+      */
+   }  catch (error) {
+        console.error(error);
+   } finally {
+     client.close()
+   }
+
+
+
+
+    /*
     const dbName = login
     const client = new MongoClient(uri, mongoConstructor);
     client.connect(err => {
       client.db(dbName).collection(collectionName).insertOne(
         {
-          login: login,
+          login: login, 
           name:name,
           email: email,
           password: password,
@@ -31,43 +74,47 @@ module.exports = {
         }
       );    
     });
-
+*/
   
-   /*
-    MongoClient.connect(url,function (err, db) {
-      const textToSplit = email.split("@");
-      const dbName = textToSplit[0];
-      const dbcon = db.db(dbName);
-      dbcon.collection(datacollection).insertOne(
-        {
-          name: name,
-          email: email,
-          password: password,
-        },
-        function (err, result) {
-          console.log("Saved the user sign up details.");
-          if (result == null) {
-            console.log("Nie dodano użytkownika");
-            callback(false);
-          } else {
-            console.log("Dodano użytkownika");
-            callback(true);
-          }
-        }
-      );
-    });
-    */
   },
 
-  validateSignIn: function (login, password, callback) {
-    const dbName = login
-    //{ useNewUrlParser: true, useUnifiedTopology: true }
-    const client = new MongoClient(uri, mongoConstructor );
-    client.connect(err => {
-      client.db(dbName).collection(collectionName).findOne(
+  validateSignIn: async function (login, password, db,callback) {
+    try {
+      db.db('users').collection('users').findOne(
         {
           login: login,
           password: password,
+          active:1
+        },
+        function (err, result) {
+         // client.close();
+          if (result === null) {
+            console.log("Niezalogowano");
+            callback(false);
+          } else {
+            console.log("Zalogowano poprawnie");
+            callback(true);
+          }
+          if (err) console.log("błąd: ", err)
+        }
+      );
+    }
+    catch (error) {
+      console.error(error);
+ } finally {
+   
+ }
+
+
+        
+    /*
+    const client = new MongoClient(uri, mongoConstructor );
+    client.connect(err => {
+      client.db('users').collection('users').findOne(
+        {
+          login: login,
+          password: password,
+          active:1
         },
         function (err, result) {
           client.close();
@@ -82,6 +129,8 @@ module.exports = {
         }
       );    
     });
+    */
+
     /*
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     client.connect(err => {

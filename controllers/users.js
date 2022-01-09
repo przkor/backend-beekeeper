@@ -1,10 +1,12 @@
 const user = require("../database/user");
+const server = require("../server");
 
-exports.signInUser = (req, res, next) => {
+exports.signInUser =  (req, res, next)=> {
   try {
     const login = req.query.login;
     const password = req.query.password;
-    user.validateSignIn(login, password, function (result) {
+    const db = req.db
+    user.validateSignIn(login, password,db,function (result) {
       if (result) {
         req.session.username = login;
         res.send("success");
@@ -37,7 +39,7 @@ exports.signInUser = (req, res, next) => {
     });
     */
   } catch (error) {
-    response.status(500).json({
+    res.status(500).json({
       error,
       message: 'Oops! Coś poszło nie tak, przy metodzie GET w endpointcie /users/signin',
     });

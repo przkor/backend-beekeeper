@@ -1,4 +1,6 @@
+const Promise = require("bluebird");
 module.exports = {
+
     //Local mongodb 
   uri:  "mongodb://localhost:27017",
     //Remoto mongodb from Atlas Cluster service
@@ -8,7 +10,8 @@ module.exports = {
     mongoConstructor: {
        useNewUrlParser: true, 
        useUnifiedTopology: true
-    }
+    },
+    //promiseLibrary:Promise
 }
 
 
